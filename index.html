@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="rj.css">
+</head>
+<body> 
+    <!-- THIS SECTION IS YOUR COVER PAGE -->
+    <div class="first_page">
+        <div id="top_section">
+            <div class="column" id="id_name">Katarina Anik #1307194</div>
+            <div class="column" id="id_unit">Interactive Media, S1 2024</div>
+        </div>
+        <div class="content_row">
+        <div class="leftcolumn">
+            <h1 id="unique-h1">IM<br>Research Journal</h1>
+        </div>  
+        <div class="rightcolumn">
+            <div id="index">
+                <p>001 Refik Anadol / artist</p>
+                <p>002 Can’t Help Myself, Sun Yuan and Peng Yu / installation</p>
+                <p>003 Mind Expander Series: Flyhead, Haus-Rucker-Co / installation</p>
+                <p>004 Moon Ribas / artist</p>
+                <p>005 Pool Suite / website</p>
+                <p>006 Schemas of Uncertainty / website</p>
+                <p>007 Ilnur Aitov / website</p>
+                <p>008 The Creative Independent / website</p>
+                <p>009 Grid Spreading by Naoki Tsutae / creative coding</p>
+                <p>010 Reaction-Diffusion by Zaron Chen / creative coding</p>
+            </div>
+        </div>
+    </div>
+    </div>
+<script>
+    /* THIS SCRIPT IS LOADED VIA CDN AND ESSENTIALLY READS THE .csv FILE ROW BY ROW 
+    TO GET THE VARIOUS `COMPONENTS` OF YOUR `JOURNAL` ONE `ENTRY` PER SECTION */
+    $(document).ready(function () {
+        Papa.parse('ResearchJournal.csv', {
+            download: true,
+            header: true,
+            complete: function (results) {
+                results.data.forEach(function (row) {
+                    var section = $('<section>');
+                    var parentDiv = $('<div>').addClass('parent');
+                    var leftDiv = $('<div>').addClass(row['Class']);
+                    var topdiv = $('<div>').addClass('topdiv').css('background-image', 'url(' + row['ImageSrc'] + ')');
+                    var bottomdiv = $('<div>').addClass('bottomdiv').css('background-image', 'url(' + row['ImageSrc2'] + ')');
+                    var rightDiv = $('<div>').addClass('right');
+                    
+                    var h1 = $('<h1>').text(row['Title']);
+                    var h2 = $('<h2>').text(row['Description']);
+                    var p = $('<p>').text(row['BodyText']);
+                    var a = $('<a>').attr('href', row['Link']).attr('target', '_blank').text(row['Link']);
+                    //var figure = $('<figure>');
+                    var img = $('<img>').attr('src', row['ImageSrc']);
+                    var img2 = $('<img>').attr('src', row['ImageSrc2']);
+                    //var figcaption = $('<figcaption>').text(row['Caption'].'\n'.$row['Caption2']);
+                    //figure.append(img, figcaption);
+                    if (row['Class'] == 'leftDoubleImage') {
+                        leftDiv.append(topdiv, bottomdiv);
+                        var captionText = 'Above: '+ row['Caption'] + ' | Below: ' + row['Caption2'];
+                        var captionDiv = $('<div>').addClass('caption').text(captionText);
+                    } else {
+                        leftDiv.css('background-image', 'url(' + row['ImageSrc'] + ')');
+                        leftDiv.css('background-size', 'cover');
+                        var captionDiv = $('<div>').addClass('caption').text(row['Caption']);
+                    }
+                    parentDiv.append(leftDiv, captionDiv);
+                    rightDiv.append(h1);
+                    var keyWords = row['Keywords'].split(', ');
+                    var span = '<p style="width:100%; line-height:2em;">';
+                    keyWords.forEach((keyword) => {
+                    // span+='#' + keyword + '&nbsp;';
+                    });
+                    span+='</p>';
+                    rightDiv.append(h2, p, a, span);
+                    section.append(parentDiv, rightDiv);
+                    $('body').append(section);
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>
